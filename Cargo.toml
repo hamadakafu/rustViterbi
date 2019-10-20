@@ -1,0 +1,13 @@
+[package]
+name = "rustViterbi"
+version = "0.1.0"
+authors = ["hamadakafu <kafu.h1998@gmail.com>"]
+edition = "2018"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+rand = "0.7.2"
+gnuplot = "0.0.32"
+rand_core = "0.5.1"
+sfmt = "0.6.0"
