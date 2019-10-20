@@ -4,13 +4,9 @@ use crate::trellis::{SMState, StateMachine, Bit};
 
 #[derive(Debug)]
 pub struct ViterbiHardDP {
-    /// 本当に贈りたい0, 1のビット系列
     pub raw_request_data: Vec<trellis::Bit>,
-    /// ステートマシンを通ったデータ系列
     pub signal_request_data: Vec<trellis::Signal>,
-    /// signal_request_dataにノイズを乗せたデータ系列
     pub noised_request_data: Vec<trellis::Signal>,
-    /// 復号化後の予測ビット系列
     pub raw_answer_data: Vec<trellis::Bit>,
 }
 
@@ -45,7 +41,7 @@ impl Viterbi for ViterbiHardDP {
 
     fn decode(&mut self, trellis: &trellis::Trellis) {
         // dp
-        // (Option<(親, どのビットが来てそうなったか), 最小の距離)を保存する
+        // (Option<(parents, target bit), min dis)
         let mut memo: Vec<Vec<Option<(Option<(trellis::SMState, Bit)>, usize)>>> = vec![vec![None; self.noised_request_data.len() + 1]; 4];
         memo[0][0] = Some((None, 0));
         for i in 0..self.noised_request_data.len() {
@@ -57,7 +53,7 @@ impl Viterbi for ViterbiHardDP {
                     let signal = sm.set(Bit::O);
                     let new_state = sm.state;
                     let new_dis = self.noised_request_data[i] - signal + value.1;
-                    // 小さかったら
+
                     match memo[Into::<usize>::into(new_state)][i + 1] {
                         Some(already_value) if (already_value.1 < new_dis) => {}
                         Some(already_value) if already_value.1 == new_dis => {
@@ -75,7 +71,7 @@ impl Viterbi for ViterbiHardDP {
                     let signal = sm.set(Bit::I);
                     let new_state = sm.state;
                     let new_dis = self.noised_request_data[i] - signal + value.1;
-                    // 小さかったら
+
                     match memo[Into::<usize>::into(new_state)][i + 1] {
                         Some(already_value) if (already_value.1 < new_dis) => {}
                         Some(already_value) if already_value.1 == new_dis => {

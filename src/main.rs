@@ -26,10 +26,10 @@ fn main() {
 
     let mut fg = Figure::new();
     fg.axes2d()
-      .set_title("A plot", &[])
+      .set_title("Viterbi", &[])
       .set_legend(Graph(0.5), Graph(0.9), &[], &[])
-      .set_x_label("sn比", &[])
-      .set_y_label("log_10(BER)", &[])
+      .set_x_label("SN", &[])
+      .set_y_label("log10(BER)", &[])
       .points(
           vs.ber.iter().map(|(i, _)| i),
           vs.ber.iter().map(|(_, i)| i),

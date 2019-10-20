@@ -3,22 +3,14 @@ use crate::trellis;
 
 #[derive(Debug)]
 pub struct ViterbiHard {
-    /// 本当に贈りたい0, 1のビット系列
     pub raw_request_data: Vec<trellis::Bit>,
-    /// ステートマシンを通ったデータ系列
     pub signal_request_data: Vec<trellis::Signal>,
-    /// signal_request_dataにノイズを乗せたデータ系列
     pub noised_request_data: Vec<trellis::Signal>,
-    /// 復号化後の予測ビット系列
     pub raw_answer_data: Vec<trellis::Bit>,
-    /// 復号化する際に使用するステートマシン
     pub state_machine: trellis::StateMachine,
 }
 
 impl Viterbi for ViterbiHard {
-    /// len は 符号化するデータの長さ 最後2つが必ず00になることに注意
-    /// 00 含んだ長さがlen
-    /// sigmaはノイズを発生させる際に用いる標準偏差
     fn new(len: usize, sigma: f64) -> Self {
         let raw_request_data: Vec<trellis::Bit> =
             (0..len).map(|i| {

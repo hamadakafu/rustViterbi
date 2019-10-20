@@ -206,35 +206,6 @@ impl StateMachine {
             }
         }
     }
-    // // 今の状態から1つ前の状態とその際の受信信号が2つ返す
-    // pub fn rollback(&mut self, bit: Bit) -> Option<((SMState, Signal), (SMState, Signal))> {
-    //     match (bit, self.state) {
-    //         (Bit::O, SMState::OO) => {
-    //             Some(((SMState::OO, Signal::OO), (SMState::OI, Signal::II)))
-    //         }
-    //         (Bit::I, SMState::OO) => {
-    //             None
-    //         }
-    //         (Bit::O, SMState::OI) => {
-    //             Some(((SMState::IO, Signal::IO), (SMState::II, Signal::OI)))
-    //         }
-    //         (Bit::I, SMState::OI) => {
-    //             None
-    //         }
-    //         (Bit::O, SMState::IO) => {
-    //             None
-    //         }
-    //         (Bit::I, SMState::IO) => {
-    //             Some(((SMState::OO, Signal::II), (SMState::OI, Signal::OO)))
-    //         }
-    //         (Bit::O, SMState::II) => {
-    //             None
-    //         }
-    //         (Bit::I, SMState::II) => {
-    //             Some(((SMState::II, Signal::IO), (SMState::IO, Signal::OI)))
-    //         }
-    //     }
-    // }
 }
 
 #[derive(Debug)]
@@ -249,7 +220,6 @@ impl Trellis {
             for first_signal in 0..4 {
                 for second_signal in 0..4 {
                     for third_signal in 0..4 {
-                        // 最もハミング距離が短いbitのパスを最後のMTStateごとに探す
                         let mut OO_bits = None;
                         let mut OI_bits = None;
                         let mut IO_bits = None;
@@ -274,8 +244,6 @@ impl Trellis {
                                     diff = diff.map(|a| a + (ss - sm.set(second_bit.into())));
                                     diff = diff.map(|a| a + (ts - sm.set(third_bit.into())));
 
-                                    // 距離が同じだった場合にこいつ虫で多数決とかいいかもなにか工夫することができるかもしれない
-                                    // 距離が同じだった場合min diffをNoneにしてあとでむしする
                                     match sm.state {
                                         SMState::OO => {
                                             if OO_min_diff > diff || OO_min_diff == None {
@@ -322,9 +290,7 @@ impl Trellis {
                             }
                         }
 
-                        // 多数決で決める
                         let bits_sum = vec![OO_bits, OI_bits, IO_bits, II_bits]
-                            // 最初のbitsを撮ってくる必要がある
                             .into_iter()
                             .filter(|a| *a != None)
                             .map(|a| a.unwrap()[0])
@@ -340,8 +306,6 @@ impl Trellis {
                         }
 
                         /*
-                        // 一番ハミング距離が短いパスが決める
-                        // 同じ距離だったときどうするか
                         let mut diffs = vec![
                             (Signal::OO, OO_min_diff),
                             (Signal::OI, OI_min_diff),
