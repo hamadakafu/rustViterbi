@@ -2,6 +2,7 @@ use crate::trellis;
 
 mod hard;
 mod hard_dp;
+mod soft;
 
 pub trait Viterbi {
     fn new(len: usize, sigma: f64) -> Self;
@@ -72,6 +73,16 @@ impl ViterbiSimu {
                     let mut viterbi = hard_dp::ViterbiHardDP::new(self.bits_len, sigma);
                     viterbi.decode(&trellis);
                     for (r, a) in viterbi.get_raw_request_data().iter().zip(viterbi.get_raw_answer_data()) {
+                        if r == a {
+                            self.oks[i] += 1;
+                        } else {
+                            self.ngs[i] += 1;
+                        }
+                    }
+                } else if &self.way == "soft" {
+                    let mut viterbi = soft::ViterbiSoft::new(self.bits_len, sigma);
+                    viterbi.decode();
+                    for (r, a) in viterbi.raw_request_data.iter().zip(&viterbi.raw_answer_data) {
                         if r == a {
                             self.oks[i] += 1;
                         } else {

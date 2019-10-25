@@ -18,11 +18,11 @@ fn main() {
     let iteration = 10000;
 
     // let mut vs = ViterbiSimu::new("hard".to_string(), start_db, tick_db, end_db, bits_len, iteration);
-    let mut vs = ViterbiSimu::new("hard-dp".to_string(), start_db, tick_db, end_db, bits_len, iteration);
+    let mut vs = ViterbiSimu::new("soft".to_string(), start_db, tick_db, end_db, bits_len, iteration);
     vs.simu();
     vs.bit_per_error();
-    dbg!(vs.oks.iter().sum::<usize>());
-    dbg!(vs.ngs.iter().sum::<usize>());
+    dbg!(vs.oks);
+    dbg!(vs.ngs);
 
     let mut fg = Figure::new();
     fg.axes2d()
